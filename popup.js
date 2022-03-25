@@ -1,7 +1,7 @@
 // channel link url
 // on filling channel link able all other form fields
-let delay_time=0
 // click the start button and get the current url
+let delay_time=0
 startBtn.addEventListener('click',()=>{
     // validate all fields before
     if (channel_link.value.trim()<1 || videoId.value.trim()<1 || delay.value.trim()<1) {
@@ -14,29 +14,17 @@ startBtn.addEventListener('click',()=>{
     let channel_url = new URL(channel_link.value.trim())
     delay_time=parseInt(delay.value.trim())
     let links_Obj={
-        videoUrl,channel_url
+        videoUrl,channel_url,
     }
     chrome.storage.local.set({"links_Obj":JSON.stringify(links_Obj)})
-    chrome.runtime.sendMessage({message:'execute-reloading'})
-    // grab the channel link videoId 
-    // chrome.runtime.sendMessage({message:'reload-this-page'})
+    countDown(delay_time)
 
 })
-chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
-    if (request.message=="start-reloading") {
-      // get the urls from storage
-      console.log('start reloading');
-      console.log(sender.url);
-    //   countDown(delay_time)
-    }
-    sendResponse({});
-    return true;
-  })
   
 function countDown(delay_time) {
     let t= delay_time
     setInterval(() => {
-        // chrome.browserAction.setBadgeText({text:''+t})
+        chrome.action.setBadgeText({text:''+t})
         t--;
         if (t<1) {
             reload_handler()
@@ -46,7 +34,7 @@ function countDown(delay_time) {
 }
 
 function reload_handler() {
-    chrome.runtime.sendMessage({message:'execute-reloading'})
+    chrome.runtime.sendMessage({message:'reload-executing'})
 }
 // stop button handler
 stopBtn.addEventListener('click',()=>{
@@ -54,7 +42,7 @@ stopBtn.addEventListener('click',()=>{
 })
 function resetAll() {
     delay_time=0
-    // chrome.browserAction.setBadgeText({text:''})
+    chrome.action.setBadgeText({text:''})
 }
 document.addEventListener('DOMContentLoaded',()=>{
    resetAll()
